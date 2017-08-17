@@ -1,0 +1,15 @@
+[Unit]
+Description=Build RPM using mock service
+After=multi-user.target
+
+[Service]
+Type=oneshot
+User=builder
+ExecStart=/build-rpm.sh
+ExecStartPost=/usr/sbin/poweroff
+PermissionsStartOnly=true
+StandardOutput=journal+console
+StandardError=inherit
+
+[Install]
+WantedBy=default.target
