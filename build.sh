@@ -18,7 +18,7 @@ REPO_DIR="$BASEDIR/repo"
 ######
 
 if [ $# -lt 2 ] ; then
-    echo "Usage: [-c <mock_config>] <package.spec> <source.tar.gz> [<auxiliary_repo>]" >&2
+    echo "Usage: $(basename "$0") [-c <mock_config>] <package.spec> <source.tar.gz> [<auxiliary_repo>]" >&2
     exit 1
 fi
 
