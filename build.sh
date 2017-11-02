@@ -1,4 +1,4 @@
-#! /bin/sh -e
+#! /bin/bash -e
 
 WD=""
 if [ "$(dirname "$0")" != "." ] ; then
