@@ -1,15 +1,12 @@
 #! /bin/bash -e
 
-WD=""
-if [ "$(dirname "$0")" != "." ] ; then
-    WD="$(readlink -f .)/"
-    cd "$(dirname "$0")"
-fi
+pushd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+VM_TEMPLATE="$(readlink -f .)/rpm-builder.qcow2"
+popd
 
 ######
 
 MOCK_CONFIG=epel-7-x86_64
-VM_TEMPLATE="$(readlink -f .)/rpm-builder.qcow2"
 BUILD_BASE="/rpmbuild"
 BASEDIR=/home/rpmbuild
 VM_POOL="$BASEDIR/vms"
@@ -27,8 +24,8 @@ if [ "$1" == '-c' ] ; then
     shift; shift
 fi
 
-SPEC="${WD}$1"
-SRC="${WD}$2"
+SPEC="$(readlink -f "$1")"
+SRC="$(readlink -f "$2")"
 shift; shift
 
 AUX_REPO=
