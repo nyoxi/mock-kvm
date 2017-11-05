@@ -97,10 +97,11 @@ echo ":: Build guest finished!"
 echo "::     VM was: $VM"
 
 echo ":: Copying out results"
-mkdir -p "$BASEDIR/output/$MOCK_CONFIG"
+echo "-> $REPO_DIR/$MOCK_CONFIG"
 guestfish add "$VM" \
     : run \
     : mount /dev/sda3 / \
+    : glob 'echo' "$BUILD_BASE/output/*.rpm" \
     : glob copy-out "$BUILD_BASE/output/*.rpm"  "$REPO_DIR/$MOCK_CONFIG"
 
 
