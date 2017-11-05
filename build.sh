@@ -11,12 +11,18 @@ BUILD_BASE="/rpmbuild"
 BASEDIR=/home/rpmbuild
 VM_POOL="$BASEDIR/vms"
 REPO_DIR="$BASEDIR/repo"
+UPLOAD_DIR=0
 
 ######
 
 if [ $# -lt 2 ] ; then
-    echo "Usage: $(basename "$0") [-c <mock_config>] <package.spec> <source.tar.gz> [<auxiliary_repo>]" >&2
+    echo "Usage: $(basename "$0") [-d] [-c <mock_config>] <package.spec> <source.tar.gz> [<auxiliary_repo>]" >&2
     exit 1
+fi
+
+if [ "$1" == '-d' ] ; then
+    UPLOAD_DIR=1
+    shift
 fi
 
 if [ "$1" == '-c' ] ; then
@@ -53,11 +59,24 @@ EOT
 
 mkdir -p "$REPO_DIR/$MOCK_CONFIG"
 
+CUSTOMIZE_ARGS=()
+# Add configuration
+CUSTOMIZE_ARGS+=(--upload "$VM_CONFIG:/rpm-build-config")
+# Add source tarball
+CUSTOMIZE_ARGS+=(--upload "$SRC:/$BUILD_BASE/SOURCES/")
+# Add spec file
+CUSTOMIZE_ARGS+=(--upload "$SPEC:/$BUILD_BASE/SPECS/")
+if [ $UPLOAD_DIR -gt 0 ] ; then
+    spec_file="$(basename "$SPEC")"
+    for f in "$(dirname "$SPEC")"/* ; do
+        if [ "$(basename "$f")" != "$spec_file" ] ; then
+            CUSTOMIZE_ARGS+=(--copy-in "$f:/$BUILD_BASE/SOURCES")
+        fi
+    done
+fi
+
 echo ":: Configuring build VM"
-virt-customize -a "$VM" \
-    --upload "$VM_CONFIG:/rpm-build-config" \
-    --upload "$SRC:/$BUILD_BASE/SOURCES/" \
-    --upload "$SPEC:/$BUILD_BASE/SPECS/"
+virt-customize -a "$VM" "${CUSTOMIZE_ARGS[@]}"
 
 echo ":: Starting build VM"
 qemu-system-x86_64 \
