@@ -6,7 +6,7 @@ BUILD_BASE=/rpmbuild
 cd "$(dirname "$0")"
 
 virt-builder --smp 2 \
-    fedora-25 --arch 'x86_64' \
+    fedora-31 --arch 'x86_64' \
     --output 'rpm-builder.qcow2' \
     --format 'qcow2' \
     --hostname 'rpm-builder' \
