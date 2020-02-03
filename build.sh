@@ -42,7 +42,7 @@ fi
 
 ######
 
-mkdir -p "$VM_POOL"
+mkdir -p "$VM_POOL" "$REPO_DIR" "$BASEDIR/cache"
 VM="$(mktemp --tmpdir="$VM_POOL" build-XXXXXXXXXX.qcow2)"
 VM_CONFIG="$(mktemp)"
 
